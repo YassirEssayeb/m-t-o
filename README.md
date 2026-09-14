@@ -2,6 +2,10 @@
 
 Application web de prévisions météo en HTML/CSS/JavaScript. Données fournies par [Open-Meteo](https://open-meteo.com/), sans clé API.
 
+[![Licence](https://img.shields.io/github/license/YassirEssayeb/m-t-o)](LICENSE)
+[![Statut CI](https://github.com/YassirEssayeb/m-t-o/actions/workflows/ci.yml/badge.svg)](https://github.com/YassirEssayeb/m-t-o/actions/workflows/ci.yml)
+[![Démo live](https://img.shields.io/badge/démo-live-2ea44f)](https://YassirEssayeb.github.io/m-t-o/)
+
 ## Fonctionnalités
 
 - Météo locale via géolocalisation du navigateur
@@ -29,12 +33,17 @@ Aucune installation ni clé API n'est nécessaire. Si la géolocalisation est re
 ## Structure
 
 ```
-├── index.html    Page principale
-├── style.css     Styles
-├── script.js     Logique météo et recherche
-├── config.js     URLs des API utilisées
+├── index.html               Page principale
+├── style.css                Styles
+├── script.js                Logique météo et recherche
+├── config.js                URLs des API utilisées
+├── .github/workflows/       CI et déploiement (GitHub Actions)
 └── README.md
 ```
+
+## Démo en ligne
+
+L'application est accessible [directement dans le navigateur](https://YassirEssayeb.github.io/m-t-o/), déployée automatiquement via GitHub Pages à chaque mise à jour de la branche `main`.
 
 ## Technologies
 
