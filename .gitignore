@@ -1,0 +1,13 @@
+# Secrets
+.env
+*.env
+.env.local
+
+# Dépendances et outils
+node_modules/
+.vscode/
+*.log
+
+# Système
+.DS_Store
+Thumbs.db

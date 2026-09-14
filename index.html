@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Application météo - Prévisions sur 5 jours avec localisation automatique">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://openweathermap.org https://*.openweathermap.org; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://nominatim.openstreetmap.org; font-src 'self'; frame-src 'none'; object-src 'none'">
+    <title>Météo - Prévisions</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌤️</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">Météo</h1>
+                <div class="header-controls">
+                    <form class="search-form" id="searchForm" autocomplete="off">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="search-input"
+                            placeholder="Rechercher une ville..."
+                            aria-label="Rechercher une ville"
+                            autocomplete="off"
+                            maxlength="100"
+                        >
+                        <button type="submit" class="search-btn" aria-label="Rechercher">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                        </button>
+                        <ul class="suggestions" id="suggestions" role="listbox" aria-label="Suggestions de villes"></ul>
+                    </form>
+                    <button class="unit-toggle" id="unitToggle" aria-label="Basculer °C/°F">
+                        <span class="unit-active">°C</span>
+                        <span class="unit-inactive">°F</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="loading" id="loading" aria-hidden="true">
+                <div class="spinner"></div>
+                <p>Chargement des données météo...</p>
+            </div>
+
+            <div class="error hidden" id="error" role="alert">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <span id="errorMessage"></span>
+            </div>
+
+            <section class="weather-current" id="weatherCurrent" aria-label="Météo actuelle">
+                <div class="current-main">
+                    <div class="location-info">
+                        <h2 class="city-name" id="cityName">--</h2>
+                        <p class="date" id="currentDate">--</p>
+                    </div>
+                    <div class="temperature-block">
+                        <img class="weather-icon" id="weatherIcon" src="" alt="" width="100" height="100">
+                        <div class="temp-value" id="tempValue">--</div>
+                        <p class="weather-desc" id="weatherDesc">--</p>
+                    </div>
+                </div>
+                <div class="current-details">
+                    <div class="detail-card">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                        </svg>
+                        <span class="detail-label">Humidité</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                    <div class="detail-card">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
+                        </svg>
+                        <span class="detail-label">Vent</span>
+                        <span class="detail-value" id="windSpeed">-- km/h</span>
+                    </div>
+                    <div class="detail-card">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <span class="detail-label">UV</span>
+                        <span class="detail-value" id="uvIndex">--</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="forecast" id="forecast" aria-label="Prévisions sur 5 jours">
+                <h3 class="section-title">Prévisions sur 5 jours</h3>
+                <div class="forecast-list" id="forecastList"></div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Propulsé par <a href="https://openweathermap.org" target="_blank" rel="noopener">OpenWeatherMap</a></p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
